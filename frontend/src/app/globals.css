@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0b0e14;
-  --foreground: #e2e8f0;
-  --card-bg: #11151c;
-  --border-muted: rgba(255, 255, 255, 0.05);
-  --border-active: rgba(255, 255, 255, 0.1);
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card-bg: #ffffff;
+  --border-muted: #e2e8f0;
+  --border-active: #cbd5e1;
 }
 
 @theme inline {
@@ -13,13 +13,13 @@
   --color-foreground: var(--foreground);
   --color-card: var(--card-bg);
   
-  /* Technical Forensic Palette */
-  --color-forensic-blue: #3498db;
-  --color-forensic-red: #e74c3c;
-  --color-forensic-green: #2ecc71;
-  --color-forensic-yellow: #f1c40f;
-  --color-forensic-orange: #e67e22;
-  --color-forensic-purple: #9b59b6;
+  /* Technical Forensic Palette - Slightly more contrast for white bg */
+  --color-forensic-blue: #2563eb;
+  --color-forensic-red: #dc2626;
+  --color-forensic-green: #16a34a;
+  --color-forensic-yellow: #ca8a04;
+  --color-forensic-orange: #ea580c;
+  --color-forensic-purple: #9333ea;
 }
 
 @keyframes scan-line {
@@ -32,10 +32,10 @@
 }
 
 .bg-grid {
-  background-size: 40px 40px;
+  background-size: 50px 50px;
   background-image: 
-    linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
+    linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px);
 }
 
 body {
@@ -53,17 +53,18 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.1);
+  background: rgba(0,0,0,0.1);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255,255,255,0.2);
+  background: rgba(0,0,0,0.2);
 }
 
 .technical-card {
   background: var(--card-bg);
   border: 1px solid var(--border-muted);
-  border-radius: 4px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
 }
 
 .verdict-line {

@@ -1,6 +1,6 @@
-# Antigravity Deepfake Detection - Launch Script
+# DeepFocus Deepfake Detection - Launch Script
 
-Write-Host "[LAUNCH] Launching Antigravity Deepfake Detection System..." -ForegroundColor Cyan
+Write-Host "[LAUNCH] Launching DeepFocus Deepfake Detection System..." -ForegroundColor Cyan
 
 # 1. Start Backend
 Write-Host "[BACKEND] Starting Backend API (FastAPI)..." -ForegroundColor Yellow

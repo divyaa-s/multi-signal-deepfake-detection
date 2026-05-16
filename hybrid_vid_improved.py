@@ -20,6 +20,7 @@ from tqdm import tqdm
 from temporal_analysis import TemporalAnalyzer
 from quality_forensic import QualityForensicsAnalyzer
 import joblib
+from visualizer_utils import generate_gradcam, generate_radar_plot, generate_bar_chart
 
 logger = logging.getLogger(__name__)
 
@@ -273,7 +274,7 @@ class ImprovedHybridAnalyzer:
         cnn_results     = self._analyze_keyframes_with_cnns(keyframes)
         quality_results = self._analyze_quality_mismatch(keyframes)
         final_results   = self._fuse_predictions(
-            temporal_results, cnn_results, quality_results, bilstm_score
+            temporal_results, cnn_results, quality_results, bilstm_score, keyframes
         )
 
         return final_results
@@ -709,7 +710,7 @@ class ImprovedHybridAnalyzer:
         logger.info(f"   Quality mismatch: {quality_results['avg_quality_mismatch']:.4f}")
         return quality_results
 
-    def _fuse_predictions(self, temporal_results, cnn_results, quality_results, bilstm_score):
+    def _fuse_predictions(self, temporal_results, cnn_results, quality_results, bilstm_score, keyframes):
         import numpy as np
 
         temporal_score   = float(temporal_results.get("temporal_consistency_score", 0.5))
@@ -815,12 +816,64 @@ class ImprovedHybridAnalyzer:
             }
         }
 
+        # =========================================================
+        # VISUALIZATION GENERATION (Radar, Bar, GradCAM)
+        # =========================================================
+        gradcam_url = None
+        radar_url = None
+        barchart_url = None
+
+        try:
+            # 1. GradCAM on the first (highest-quality) keyframe
+            if keyframes:
+                best_kf = keyframes[0]
+                # Save face crop to temporary path for GradCAM
+                temp_kf_path = os.path.join(os.getcwd(), "backend", "uploads", f"kf_last_frame.jpg")
+                os.makedirs(os.path.dirname(temp_kf_path), exist_ok=True)
+                
+                # Convert BGR to RGB for saving (matplotlib style)
+                Image.fromarray(best_kf["face"]).save(temp_kf_path)
+                
+                # Select a model for GradCAM (using EfficientNet-B3 as default high-res)
+                gc_model_info = self.models.get("efficientnet_b3")
+                if gc_model_info:
+                    gradcam_url = generate_gradcam(
+                        temp_kf_path, 
+                        gc_model_info["model"], 
+                        gc_model_info["config"]["input_size"][0],
+                        label, confidence, DEVICE
+                    )
+
+            # 2. Radar Plot
+            radar_url = generate_radar_plot(
+                ensemble_fake=cnn_score,
+                watermark_prob=quality_mismatch, # Using quality mismatch as 'Forensic' proxy for video
+                fake_probs=per_model,
+                label=label,
+                confidence=confidence
+            )
+
+            # 3. Bar Chart
+            barchart_url = generate_bar_chart(
+                fake_probs=per_model,
+                ensemble_fake=cnn_score,
+                watermark_prob=quality_mismatch,
+                final_fake=final_score,
+                label=label,
+                confidence=confidence
+            )
+        except Exception as e:
+            logger.warning(f"Video visualization generation failed: {e}")
+
         logger.info(f"  FINAL PIPELINE OUTPUT -> {label} (Score: {final_score:.4f}, Threshold: {THRESHOLD})")
 
         return {
             "label":               label,
             "confidence":          float(round(confidence, 4)),
             "final_score":         float(round(final_score, 4)),
+            "gradcam_url":         gradcam_url,
+            "radar_url":           radar_url,
+            "barchart_url":        barchart_url,
             "forensic_report":     forensic_report
         }
 

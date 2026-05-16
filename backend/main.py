@@ -18,7 +18,7 @@ from hybrid_vid_improved import HybridVideoAnalyzer
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="Antigravity Deepfake Detection API", version="1.0.0")
+app = FastAPI(title="DeepFocus Deepfake Detection API", version="1.0.0")
 
 # CORS Configuration
 app.add_middleware(
@@ -53,7 +53,7 @@ class AnalysisResult(BaseModel):
 
 @app.get("/")
 async def root():
-    return {"message": "Antigravity Deepfake Detection API is running"}
+    return {"message": "DeepFocus Deepfake Detection API is running"}
 
 @app.post("/analyze/image")
 async def analyze_image_endpoint(file: UploadFile = File(...)):
