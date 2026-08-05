@@ -126,8 +126,9 @@ class ImprovedHybridAnalyzer:
         self.quality_analyzer = QualityForensicsAnalyzer()
 
         self.meta_learner = None
-        if os.path.exists('video_meta_learner_v2.pkl'):
-            self.meta_learner = joblib.load('video_meta_learner_v2.pkl')
+        VIDEO_META_LEARNER_PATH = os.path.join(BASE_DIR, 'final', 'video_meta_learner_v2.pkl')
+        if os.path.exists(VIDEO_META_LEARNER_PATH):
+            self.meta_learner = joblib.load(VIDEO_META_LEARNER_PATH)
             print("✅ SUCCESS: Video Meta-Learner loaded for fusion!")
         else:
             print("⚠️ WARNING: video_meta_learner_v2.pkl not found. Falling back to heuristic math.")
