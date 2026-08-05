@@ -21,17 +21,18 @@ from temporal_analysis import TemporalAnalyzer
 from quality_forensic import QualityForensicsAnalyzer
 import joblib
 from visualizer_utils import generate_gradcam, generate_radar_plot, generate_bar_chart
-
 logger = logging.getLogger(__name__)
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # ---------------------------------------------------------------------------
 # CNN Model registry
 # ---------------------------------------------------------------------------
 MODEL_CONFIGS = {
     "efficientnet_b3": {
-        "path":       r"D:\Projects\Major Project\Deepfake Detection\models\new\new_effb3_finetuned.pth",
+        "path":       os.path.join(BASE_DIR, "final", "new_effb3_finetuned.pth"),
         "input_size": (300, 300),
         "model_name": "efficientnet_b3",
         "num_classes": 1,
@@ -39,7 +40,7 @@ MODEL_CONFIGS = {
         "norm_std":   [0.229, 0.224, 0.225],
     },
     "xception": {
-        "path":       r"D:\Projects\Major Project\Deepfake Detection\models\new\new_xception_finetuned.pth",
+        "path":       os.path.join(BASE_DIR, "final", "new_xception_finetuned.pth"),
         "input_size": (299, 299),
         "model_name": "legacy_xception",
         "num_classes": 1,
@@ -47,7 +48,7 @@ MODEL_CONFIGS = {
         "norm_std":   [0.5, 0.5, 0.5],
     },
     "vit": {
-        "path":       r"D:\Projects\Major Project\Deepfake Detection\models\new\new_vit_finetuned.pth",
+        "path":       os.path.join(BASE_DIR, "final", "new_vit_finetuned.pth"),
         "input_size": (224, 224),
         "model_name": "vit_small_patch16_224",
         "num_classes": 1,
@@ -55,7 +56,7 @@ MODEL_CONFIGS = {
         "norm_std":   [0.229, 0.224, 0.225],
     },
     "convnext": {
-        "path":       r"D:\Projects\Major Project\Deepfake Detection\models\new\new_convnext_finetuned.pth",
+        "path":       os.path.join(BASE_DIR, "final", "new_convnext_finetuned.pth"),
         "input_size": (224, 224),
         "model_name": "convnext_small",
         "num_classes": 1,
@@ -74,8 +75,8 @@ MODEL_ENSEMBLE_WEIGHTS = {
 # ---------------------------------------------------------------------------
 # BiLSTM model paths
 # ---------------------------------------------------------------------------
-BILSTM_CHECKPOINT  = r"D:\Projects\Major Project\Deepfake Detection\models\v5\bilstm_v2_best.pth"
-BILSTM_NORM_STATS  = r"D:\Projects\Major Project\Deepfake Detection\models\v5\norm_stats.pt"
+BILSTM_CHECKPOINT  = os.path.join(BASE_DIR, "final", "bilstm_v2_best.pth")
+BILSTM_NORM_STATS  = os.path.join(BASE_DIR, "final", "norm_stats.pt")
 
 # BiLSTM architecture constants
 BILSTM_FLOW_DIM   = 12
