@@ -12,7 +12,7 @@ from pydantic import BaseModel
 
 # Import detection logic
 from deepfake_detection import generate_gradcam_and_ensemble_predict
-from hybrid_vid_improved import HybridVideoAnalyzer
+from hybrid_vid_improved import ImprovedHybridAnalyzer
 
 # Configure Logging
 logging.basicConfig(level=logging.INFO)
@@ -41,7 +41,8 @@ for d in [UPLOAD_DIR, STATIC_DIR]:
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 # Initialize Video Analyzer (Singleton-like)
-video_analyzer = HybridVideoAnalyzer()
+# Use reduced keyframes for cloud deployment to avoid OOM on free Codespace (8GB RAM)
+video_analyzer = ImprovedHybridAnalyzer(num_keyframes=20)
 
 class AnalysisResult(BaseModel):
     label: str
